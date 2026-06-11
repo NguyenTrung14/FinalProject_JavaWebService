@@ -2,9 +2,7 @@ package com.example.demo.finalprojectjavawebservice.dto.response;
 
 import com.example.demo.finalprojectjavawebservice.entity.Booking;
 import com.example.demo.finalprojectjavawebservice.entity.enums.BookingStatus;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,10 +19,9 @@ public class BookingResponse {
     private String customerUsername;
     private Long courtId;
     private String courtName;
-    private Long timeSlotId;
-    private LocalTime startTime;
-    private LocalTime endTime;
-    private LocalDate bookingDate;
+    private LocalDateTime bookingDate;
+    private Integer durationMinutes;
+    private LocalDateTime endTime;
     private BookingStatus status;
     private LocalDateTime createdAt;
 
@@ -35,10 +32,9 @@ public class BookingResponse {
                 booking.getCustomer().getUsername(),
                 booking.getCourt().getId(),
                 booking.getCourt().getName(),
-                booking.getTimeSlot().getId(),
-                booking.getTimeSlot().getStartTime(),
-                booking.getTimeSlot().getEndTime(),
                 booking.getBookingDate(),
+                booking.getDurationMinutes(),
+                booking.getEndTime(),
                 booking.getStatus(),
                 booking.getCreatedAt()
         );

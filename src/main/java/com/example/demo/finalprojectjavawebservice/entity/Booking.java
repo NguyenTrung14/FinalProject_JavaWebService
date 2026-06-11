@@ -14,7 +14,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -43,12 +42,11 @@ public class Booking {
     @JoinColumn(name = "court_id", nullable = false)
     private Court court;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "time_slot_id", nullable = false)
-    private TimeSlot timeSlot;
+    @Column(nullable = false)
+    private LocalDateTime bookingDate;
 
     @Column(nullable = false)
-    private LocalDate bookingDate;
+    private Integer durationMinutes;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
@@ -68,10 +66,20 @@ public class Booking {
         if (status == null) {
             status = BookingStatus.PENDING;
         }
+        if (durationMinutes == null) {
+            durationMinutes = 30;
+        }
     }
 
     @PreUpdate
     void preUpdate() {
         updatedAt = LocalDateTime.now();
+    }
+
+    public LocalDateTime getEndTime() {
+        if (bookingDate == null || durationMinutes == null) {
+            return bookingDate;
+        }
+        return bookingDate.plusMinutes(durationMinutes);
     }
 }

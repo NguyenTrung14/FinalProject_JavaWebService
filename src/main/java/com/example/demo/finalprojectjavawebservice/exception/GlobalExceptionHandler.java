@@ -45,6 +45,16 @@ public class GlobalExceptionHandler {
         return build(HttpStatus.UNAUTHORIZED, "Unauthorized", exception.getMessage(), request.getRequestURI());
     }
 
+    @ExceptionHandler(CloudStorageException.class)
+    public ResponseEntity<ErrorResponse> handleCloudStorage(CloudStorageException exception, HttpServletRequest request) {
+        return build(
+                HttpStatus.SERVICE_UNAVAILABLE,
+                "Service Unavailable",
+                exception.getMessage(),
+                request.getRequestURI()
+        );
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleUnexpected(Exception exception, HttpServletRequest request) {
         return build(

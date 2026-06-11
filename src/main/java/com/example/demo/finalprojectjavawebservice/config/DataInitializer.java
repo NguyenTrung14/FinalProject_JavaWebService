@@ -34,6 +34,12 @@ public class DataInitializer implements CommandLineRunner {
     @Value("${app.seed.admin.password:admin123@}")
     private String adminPassword;
 
+    @Value("${app.seed.manager.username:manager}")
+    private String managerUsername;
+
+    @Value("${app.seed.manager.password:manager123@}")
+    private String managerPassword;
+
     @Value("${app.seed.customer.username:customer}")
     private String customerUsername;
 
@@ -73,12 +79,26 @@ public class DataInitializer implements CommandLineRunner {
                     .status(AccountStatus.ACTIVE)
                     .build());
         }
+
+        if (!userAccountRepository.existsByUsernameIgnoreCase(managerUsername)) {
+            userAccountRepository.save(UserAccount.builder()
+                    .username(managerUsername)
+                    .email(managerUsername + "@gmail.com")
+                    .passwordHash(passwordEncoder.encode(managerPassword))
+                    .fullName("Sample Manager")
+                    .role(Role.MANAGER)
+                    .status(AccountStatus.ACTIVE)
+                    .build());
+        }
     }
 
     private void seedCourts() {
-        createCourtIfMissing("Court 1", "Indoor badminton court with standard lighting");
-        createCourtIfMissing("Court 2", "Indoor badminton court near reception");
-        createCourtIfMissing("Court 3", "Indoor badminton court for training sessions");
+        for (int courtNumber = 1; courtNumber <= 10; courtNumber++) {
+            createCourtIfMissing(
+                    "Court " + courtNumber,
+                    "Indoor badminton court number " + courtNumber + " with standard lighting"
+            );
+        }
     }
 
     private void createCourtIfMissing(String name, String description) {

@@ -33,7 +33,7 @@ public class BookingController {
                 .body(ApiResponse.created("Booking created successfully", response));
     }
 
-    @GetMapping
+    @GetMapping({"", "/history"})
     public ApiResponse<List<BookingResponse>> getMyBookings(Principal principal) {
         return ApiResponse.ok("Bookings fetched successfully", bookingService.getMyBookings(principal.getName()));
     }

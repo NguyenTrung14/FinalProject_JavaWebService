@@ -1,8 +1,9 @@
 package com.example.demo.finalprojectjavawebservice.dto.request;
 
 import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,8 +20,9 @@ public class BookingRequest {
 
     @NotNull
     @FutureOrPresent
-    private LocalDate bookingDate;
+    private LocalDateTime bookingDate;
 
     @NotNull
-    private Long timeSlotId;
+    @Min(30)
+    private Integer durationMinutes;
 }

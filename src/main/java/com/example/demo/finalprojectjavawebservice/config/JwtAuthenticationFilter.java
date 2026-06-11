@@ -1,8 +1,8 @@
 package com.example.demo.finalprojectjavawebservice.config;
 
 import com.example.demo.finalprojectjavawebservice.dto.response.ErrorResponse;
-import com.example.demo.finalprojectjavawebservice.repository.TokenBlacklistRepository;
 import com.example.demo.finalprojectjavawebservice.service.JwtService;
+import com.example.demo.finalprojectjavawebservice.service.RedisTokenBlacklistService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
@@ -10,7 +10,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -30,7 +29,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
-    private final TokenBlacklistRepository tokenBlacklistRepository;
+    private final RedisTokenBlacklistService redisTokenBlacklistService;
     private final ObjectMapper objectMapper;
 
     @Override
@@ -46,7 +45,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         String token = authorizationHeader.substring(7);
-        if (tokenBlacklistRepository.existsByTokenAndExpiresAtAfter(token, LocalDateTime.now())) {
+        if (redisTokenBlacklistService.isBlacklisted(token)) {
             writeForbidden(request, response);
             return;
         }
@@ -55,7 +54,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String username = jwtService.extractUsername(token);
             if (StringUtils.hasText(username) && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                if (jwtService.isAccessTokenValid(token, userDetails)) {
+                if (userDetails.isAccountNonLocked() && jwtService.isAccessTokenValid(token, userDetails)) {
                     UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                             userDetails,
                             null,
