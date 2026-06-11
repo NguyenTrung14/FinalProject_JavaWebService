@@ -55,7 +55,7 @@ public class DataInitializer implements CommandLineRunner {
         if (!userAccountRepository.existsByUsernameIgnoreCase(adminUsername)) {
             userAccountRepository.save(UserAccount.builder()
                     .username(adminUsername)
-                    .email(adminUsername + "@local.test")
+                    .email(adminUsername + "@gmail.com")
                     .passwordHash(passwordEncoder.encode(adminPassword))
                     .fullName("System Admin")
                     .role(Role.ADMIN)
@@ -66,7 +66,7 @@ public class DataInitializer implements CommandLineRunner {
         if (!userAccountRepository.existsByUsernameIgnoreCase(customerUsername)) {
             userAccountRepository.save(UserAccount.builder()
                     .username(customerUsername)
-                    .email(customerUsername + "@local.test")
+                    .email(customerUsername + "@gmail.com")
                     .passwordHash(passwordEncoder.encode(customerPassword))
                     .fullName("Sample Customer")
                     .role(Role.CUSTOMER)
