@@ -1,14 +1,11 @@
 package com.example.demo.finalprojectjavawebservice.config;
 
 import com.example.demo.finalprojectjavawebservice.entity.Court;
-import com.example.demo.finalprojectjavawebservice.entity.TimeSlot;
 import com.example.demo.finalprojectjavawebservice.entity.UserAccount;
 import com.example.demo.finalprojectjavawebservice.entity.enums.AccountStatus;
 import com.example.demo.finalprojectjavawebservice.entity.enums.Role;
 import com.example.demo.finalprojectjavawebservice.repository.CourtRepository;
-import com.example.demo.finalprojectjavawebservice.repository.TimeSlotRepository;
 import com.example.demo.finalprojectjavawebservice.repository.UserAccountRepository;
-import java.time.LocalTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -22,7 +19,6 @@ public class DataInitializer implements CommandLineRunner {
 
     private final UserAccountRepository userAccountRepository;
     private final CourtRepository courtRepository;
-    private final TimeSlotRepository timeSlotRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Value("${app.seed.enabled:true}")
@@ -54,7 +50,6 @@ public class DataInitializer implements CommandLineRunner {
         }
         seedUsers();
         seedCourts();
-        seedTimeSlots();
     }
 
     private void seedUsers() {
@@ -111,21 +106,4 @@ public class DataInitializer implements CommandLineRunner {
         }
     }
 
-    private void seedTimeSlots() {
-        createTimeSlotIfMissing(LocalTime.of(7, 0), LocalTime.of(8, 0));
-        createTimeSlotIfMissing(LocalTime.of(8, 0), LocalTime.of(9, 0));
-        createTimeSlotIfMissing(LocalTime.of(17, 0), LocalTime.of(18, 0));
-        createTimeSlotIfMissing(LocalTime.of(18, 0), LocalTime.of(19, 0));
-        createTimeSlotIfMissing(LocalTime.of(19, 0), LocalTime.of(20, 0));
-    }
-
-    private void createTimeSlotIfMissing(LocalTime startTime, LocalTime endTime) {
-        if (!timeSlotRepository.existsByStartTimeAndEndTime(startTime, endTime)) {
-            timeSlotRepository.save(TimeSlot.builder()
-                    .startTime(startTime)
-                    .endTime(endTime)
-                    .active(true)
-                    .build());
-        }
-    }
 }

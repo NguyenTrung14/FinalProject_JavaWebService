@@ -92,7 +92,7 @@ class ControllerUnitTests {
         BookingService bookingService = mock(BookingService.class);
         BookingController controller = new BookingController(bookingService);
         MockMvc mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
-        LocalDateTime bookingDate = LocalDateTime.of(2026, 6, 12, 9, 30);
+        LocalDateTime bookingDate = futureBookingDate();
         BookingRequest request = new BookingRequest(1L, bookingDate, 60);
 
         when(bookingService.createBooking(any(BookingRequest.class), eq("customer")))
@@ -134,7 +134,7 @@ class ControllerUnitTests {
     }
 
     private BookingResponse bookingResponse(Long id, BookingStatus status) {
-        LocalDateTime bookingDate = LocalDateTime.of(2026, 6, 12, 9, 30);
+        LocalDateTime bookingDate = futureBookingDate();
         return new BookingResponse(
                 id,
                 1L,
@@ -147,5 +147,14 @@ class ControllerUnitTests {
                 status,
                 LocalDateTime.of(2026, 6, 11, 12, 0)
         );
+    }
+
+    private LocalDateTime futureBookingDate() {
+        return LocalDateTime.now()
+                .plusDays(1)
+                .withHour(9)
+                .withMinute(30)
+                .withSecond(0)
+                .withNano(0);
     }
 }
